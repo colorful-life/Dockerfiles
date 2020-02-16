@@ -33,11 +33,11 @@ services:
   wordpress:
     depends_on:
       - wpdb
+	 image: colife/wordpress-xdebug:latest
     # xdebugを含める為、wordpressのimageを直接使用せずに Dockerfileからインストールする
-    # image: wordpress:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     ports:
       - "${PORT_WP:-8080}:80"
     restart: always
@@ -99,6 +99,7 @@ services:
 
 ```
 
+
 ## .env
 ```yaml
 ######### docker-compose用 設定 #########
@@ -140,6 +141,7 @@ MYSQL_ROOT_PASSWORD=wordpressroot
 
 ```
 
+
 ## php.ini
 ```ini
 default_charset = UTF-8
@@ -175,4 +177,24 @@ xdebug.var_display_max_data = 1024
 xdebug.var_display_max_depth = -1
 ; xdebug.remote_log = /tmp/log/xdebug.log
 
+```
+
+
+## VS Code with PHP Debug - .vscode/launch.json
+```json
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Listen for XDebug",
+			"type": "php",
+			"request": "launch",
+			"port": 9000,
+			"pathMappings": {
+				"/var/www/html": "${workspaceFolder}"
+			}
+		},
+
+	]
+}
 ```
