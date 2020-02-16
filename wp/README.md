@@ -151,6 +151,7 @@ post_max_size = 1024M
 upload_max_filesize = 1024M
 
 log_errors = 1
+html_errors = 1
 error_reporting = E_ALL
 error_log = /tmp/log/php_errors.log
 
@@ -184,18 +185,18 @@ xdebug.var_display_max_depth = -1
 ## VS Code with PHP Debug - .vscode/launch.json
 ```json
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Listen for XDebug",
-			"type": "php",
-			"request": "launch",
-			"port": 9000,
-			"pathMappings": {
-				"/var/www/html": "${workspaceFolder}"
-			}
-		},
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Listen for XDebug",
+      "type": "php",
+      "request": "launch",
+      "port": 9000,
+      "pathMappings": {
+        "/var/www/html": "${workspaceFolder}"
+      }
+    },
 
-	]
+  ]
 }
 ```
