@@ -43,7 +43,8 @@ services:
     restart: always
     volumes:
       - ./html:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
+      # - ./php.ini:/usr/local/etc/php/php.ini
+      - ./php.ini:/usr/local/etc/php/conf.d/zzz-php.ini
       - ./.tmp/log:/tmp/log
     working_dir: /var/www/html${WP_DIR}
     environment:
