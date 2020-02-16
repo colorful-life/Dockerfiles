@@ -33,7 +33,7 @@ services:
   wordpress:
     depends_on:
       - wpdb
-	 image: colife/wordpress-xdebug:latest
+    image: colife/wordpress-xdebug:latest
     # xdebugを含める為、wordpressのimageを直接使用せずに Dockerfileからインストールする
     # build:
     #   context: .
