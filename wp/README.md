@@ -4,7 +4,7 @@ https://hub.docker.com/r/colife/wordpress-xdebug
 
 From [WordPress Official Image](https://hub.docker.com/_/wordpress/)
 
-
+---
 ## docker-compose.yml
 ```yaml
 version: '3.4'
@@ -43,6 +43,7 @@ services:
     restart: always
     volumes:
       - ./html:/var/www/html
+      - ./wp-install.sh:/tmp/wp-install.sh
       # - ./php.ini:/usr/local/etc/php/php.ini
       - ./php.ini:/usr/local/etc/php/conf.d/zzz-php.ini
       - ./.tmp/log:/tmp/log
@@ -100,7 +101,7 @@ services:
 
 ```
 
-
+---
 ## .env
 ```yaml
 ######### docker-compose用 設定 #########
@@ -142,7 +143,7 @@ MYSQL_ROOT_PASSWORD=wordpressroot
 
 ```
 
-
+---
 ## php.ini
 ```ini
 default_charset = UTF-8
@@ -153,7 +154,7 @@ upload_max_filesize = 1024M
 log_errors = 1
 html_errors = 1
 error_reporting = E_ALL
-error_log = /tmp/log/php_errors.log
+; error_log = /tmp/log/php_errors.log
 
 date.timezone = UTC
 
@@ -180,8 +181,64 @@ xdebug.var_display_max_depth = -1
 ; xdebug.remote_log = /tmp/log/xdebug.log
 
 ```
+---
+## wp-install.sh
+```sh
+#!/bin/bash
+set -ex;
 
+### WPをインストールしたパス： .env で設定したパスと合わせる ###
+WP_INSTALL_DIR=/var/www/html/wp
+### サイトURL： .env で設定したポート、サブディレクトリと合わせる ###
+WP_URL=localhost:8080/wp
+### インストールするプラグイン ###
+PLUGINS=(
+  # "duplicate-post"
+  # "advanced-custom-fields"
+  "classic-editor"
+  # "tinymce-advanced"
+  "wp-multibyte-patch"
+)
+###### WPのダウンロード（必要ならアンコメント） #####
+# wp core download \
+#   --locale=ja \
+#   --version=4.9.1 \
+#   --path=${WP_INSTALL_DIR}  \
+#   --force \
+#   --allow-root
 
+###### WPのインストール： タイトル、ユーザー等の設定 #####
+wp core install \
+  --path=${WP_INSTALL_DIR} \
+  --url=${WP_URL} \
+  --title=テスト用WordPress \
+  --admin_user=admin \
+  --admin_password=admin \
+  --admin_email=admin@docker.test \
+  --allow-root
+
+###### プラグインのインストール #####
+for plugin in ${PLUGINS[@]}; do
+  ### インストール＆有効化するなら ###
+  # wp plugin install $plugin --activate --path=${WP_INSTALL_DIR} --allow-root
+  ### 有効化はせずにインストールするのみ ###
+  wp plugin install $plugin --path=${WP_INSTALL_DIR}  --allow-root
+done
+```
+
+1. WP用のコンテナにbashで入る。 ※ 下記 `wordpress` は、WPのコンテナ名
+   ```sh
+   $ docker-compose exec wordpress bash
+   ```
+2. WP用のコンテナにマウントしておいた wp-install.sh のパーミッションを設定して、実行。
+   ```bash
+   $ chmod +x /tmp/wp-install.sh
+   ```
+   ```bash
+   $ /tmp/wp-install.sh
+   ```
+
+---
 ## VS Code with PHP Debug - .vscode/launch.json
 ```json
 {
